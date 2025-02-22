@@ -5,6 +5,7 @@ const chats = require("./data/data");
 const cors = require("cors");
 const connectDB = require("./config/db");
 const userRoutes = require("./routes/userRoutes");
+const chatRoutes = require("./routes/chatRouter")
 const { notFound, errorHandler } = require("./middleware/errorMiddleWare");
 const app = express();
 
