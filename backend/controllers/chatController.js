@@ -68,4 +68,20 @@ const fetchChat = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { accessChat, fetchChat };
+const createGroupChat = asyncHandler(async (req, res) => {
+  if (!req.body.users || !req.body.name) {
+    return res.status(400).send({ message: "Please Fill all the fields" });
+  }
+
+  var users = JSON.parse(req.body.users);
+
+  if (users.length < 2) {
+    return res
+      .status(400)
+      .send({ message: "More than 2 users are required to form a group chat" });
+  }
+
+  users.push(req.user);
+});
+
+module.exports = { accessChat, fetchChat, createGroupChat };
