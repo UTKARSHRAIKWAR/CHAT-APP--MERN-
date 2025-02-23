@@ -17,6 +17,15 @@ const chats = [
       { name: "Alice", email: "alice@example.com" },
     ],
   },
+  {
+    _id: "617a07asd7e18c25468bc7c4dd5",
+    chatName: "Janade Smith",
+    isGroupChat: false,
+    users: [
+      { name: "sd Smith", email: "jane@esdsdsdsxample.com" },
+      { name: "Aladsice", email: "aliceasdsd@example.com" },
+    ],
+  },
 ];
 
 module.exports = chats;
