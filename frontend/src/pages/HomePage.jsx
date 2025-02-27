@@ -2,11 +2,23 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Login from "@/components/Authentication/Login";
 import SignUp from "@/components/Authentication/SignUp";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 const HomePage = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("userInfo"));
+
+    if (user) {
+      navigate("/chats");
+    }
+  }, [navigate]);
+
   return (
     <div className="">
-      <Card >
+      <Card>
         <CardHeader>
           <CardTitle>Chat App</CardTitle>
         </CardHeader>

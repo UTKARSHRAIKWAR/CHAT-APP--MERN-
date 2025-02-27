@@ -64,7 +64,7 @@ const Login = () => {
       return;
     }
 
-    console.log("Form Data:", { email, password });
+    // console.log("Form Data:", { email, password });
   };
 
   return (

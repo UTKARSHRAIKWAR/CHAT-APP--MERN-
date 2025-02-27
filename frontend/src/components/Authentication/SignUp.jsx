@@ -117,13 +117,13 @@ const SignUp = () => {
       return;
     }
 
-    console.log("Form Data:", {
-      name,
-      email,
-      password,
-      confirmPassword,
-      pic,
-    });
+    // console.log("Form Data:", {
+    //   name,
+    //   email,
+    //   password,
+    //   confirmPassword,
+    //   pic,
+    // });
   };
   return (
     <div>
