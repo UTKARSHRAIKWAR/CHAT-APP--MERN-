@@ -35,7 +35,7 @@ import axios from "axios";
 import LoaderSkeliton from "../LoaderSkeliton";
 import UserListing from "./UserListing";
 
-const SideDrawer = () => {
+const SideDrawer = ({ onclose }) => {
   const { user, setSelectedChat, chats, setChats } = ChatState();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -43,6 +43,7 @@ const SideDrawer = () => {
   const [searchResult, setSearchResult] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loadingChat, setLoadingChat] = useState(false);
+  const [open, setOpen] = useState(false);
 
   const logOutHandler = () => {
     localStorage.removeItem("userInfo");
@@ -84,16 +85,16 @@ const SideDrawer = () => {
     try {
       setLoadingChat(true);
       const config = {
-        "content-type": "application/json",
         headers: {
+          "content-type": "application/json",
           Authorization: `Bearer ${user.token}`,
         },
       };
 
       const { data } = await axios.post("api/chat", { userId }, config);
+
+      if (!chats.find((c) => c._id === data._id)) setChats([data, ...chats]);
       setSelectedChat(data);
-      setLoadingChat(false);
-      onclose();
     } catch (error) {
       toast({
         title: "Something Went Wrong!",
@@ -101,6 +102,9 @@ const SideDrawer = () => {
         variant: "destructive",
         duration: 3000,
       });
+    } finally {
+      setLoadingChat(false);
+      onclose?.();
     }
   };
 
@@ -110,7 +114,7 @@ const SideDrawer = () => {
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger>
-              <Sheet>
+              <Sheet open={open} onOpenChange={setOpen}>
                 <SheetTrigger asChild>
                   <Button variant="ghost" className="flex items-center gap-2">
                     <Search size={20} />
@@ -154,6 +158,12 @@ const SideDrawer = () => {
                           handleFunction={() => accessChat(user._id)}
                         />
                       ))
+                    )}
+                    {loadingChat && (
+                      <Loader
+                        className="animate-spin text-blue-500 flex"
+                        size={32}
+                      />
                     )}
                   </div>
                 </SheetContent>
