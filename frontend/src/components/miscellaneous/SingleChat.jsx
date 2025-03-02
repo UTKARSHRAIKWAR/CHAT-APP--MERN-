@@ -3,6 +3,7 @@ import { Button } from "../ui/button";
 import { ArrowLeft } from "lucide-react";
 import { getSender, getSenderFull } from "@/config/chatLogic";
 import ProfileDialogSelected from "../dailogs/SelectedProfileDialoge";
+import UpdateGroupChat from "./UpdateGroupChat";
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const { user, selectedChat, setSelectedChat } = ChatState();
@@ -27,8 +28,18 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 />{" "}
               </>
             ) : (
-              <>{selectedChat.chatName.toUpperCase()}</>
+              <>
+                {selectedChat.chatName.toUpperCase()}
+                <UpdateGroupChat
+                  fetchAgain={fetchAgain}
+                  setFetchAgain={setFetchAgain}
+                />
+              </>
             )}
+          </div>
+
+          <div className="flex flex-col justify-end p-3 bg-[#E8E8E8] w-full h-full rounded-lg overflow-y-hidden">
+            {/* message here */}
           </div>
         </>
       ) : (

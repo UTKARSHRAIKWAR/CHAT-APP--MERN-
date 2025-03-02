@@ -1,12 +1,12 @@
+import { useEffect, useState } from "react";
+import GroupModal from "./GroupModal";
+import { Button } from "../ui/button";
+import { MessageSquareDiff } from "lucide-react";
+import { getSender } from "@/config/chatLogic";
+import LoaderSkeliton from "../ui/LoaderSkeliton";
 import { ChatState } from "@/context/ChatProvider";
 import { useToast } from "@/hooks/use-toast";
 import axios from "axios";
-import { useEffect, useState } from "react";
-import { Button } from "../ui/button";
-import { MessageSquareDiff } from "lucide-react";
-import LoaderSkeliton from "../ui/LoaderSkeliton";
-import { getSender } from "@/config/chatLogic";
-import GroupModal from "./GroupModal";
 
 const MyChats = ({ fetchAgain }) => {
   const [loggedUser, setLoggedUser] = useState();
