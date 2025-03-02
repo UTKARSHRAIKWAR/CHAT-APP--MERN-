@@ -27,12 +27,12 @@ import {
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ChatState } from "@/context/ChatProvider";
-import ProfileDialog from "../../dailogs/ProfileDialog";
+import ProfileDialog from "../dailogs/ProfileDialog";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import axios from "axios";
-import LoaderSkeliton from "../LoaderSkeliton";
+import LoaderSkeliton from "../ui/LoaderSkeliton";
 import UserListing from "./UserListing";
 
 const SideDrawer = ({ onclose }) => {

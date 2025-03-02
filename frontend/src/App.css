@@ -10,3 +10,18 @@
   background-position: center;
   color: black;
 }
+
+/* Hide scrollbar for Webkit (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* For Firefox */
+* {
+  scrollbar-width: none;
+}
+
+/* Ensure scrolling still works */
+body {
+  overflow: auto;
+}
