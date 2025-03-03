@@ -1,12 +1,16 @@
 import { ChatState } from "@/context/ChatProvider";
 import { Button } from "../ui/button";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Loader } from "lucide-react";
 import { getSender, getSenderFull } from "@/config/chatLogic";
 import ProfileDialogSelected from "../dailogs/SelectedProfileDialoge";
 import UpdateGroupChat from "./UpdateGroupChat";
+import { useState } from "react";
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const { user, selectedChat, setSelectedChat } = ChatState();
+  const [messages, setMessages] = useState([]);
+  const [newMessage, setNewMessage] = useState();
+  const [loading, setLoading] = useState(false);
   return (
     <>
       {selectedChat ? (
@@ -39,7 +43,9 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
           </div>
 
           <div className="flex flex-col justify-end p-3 bg-[#E8E8E8] w-full h-full rounded-lg overflow-y-hidden">
-            {/* message here */}
+            {
+              loading ? <Loader />
+            }
           </div>
         </>
       ) : (

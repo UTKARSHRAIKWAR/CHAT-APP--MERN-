@@ -6,6 +6,7 @@ const cors = require("cors");
 const connectDB = require("./config/db");
 const userRoutes = require("./routes/userRoutes");
 const chatRoutes = require("./routes/chatRouter");
+const messageRoute = require("./routes/messageRoutes");
 const { notFound, errorHandler } = require("./middleware/errorMiddleWare");
 const app = express();
 
@@ -23,38 +24,11 @@ app.get("/", (req, res) => {
 
 app.use("/api/user", userRoutes);
 app.use("/api/chat", chatRoutes);
+app.use("/api/message", messageRoute);
 
 app.use(notFound);
 app.use(errorHandler);
 
-// app.get("/api/chat", (req, res) => {
-//   res.send(chats);
-// });
-
-// app.get("/api/chats", (req, res) => {
-//   res.json([
-//     { message: "Hello from backend!" },
-//     { message: "Chat system online." },
-//   ]);
-// });
-
 const PORT = process.env.PORT || 5000;
-
-// app.get("
-//
-// /api/chats/:id", (req, res) => {
-//   const singleChat = chats.find((c) => c._id === req.params.id);
-//   res.send(singleChat);
-// });
-
-// app.get("/api/chats/:id", (req, res) => {
-//   const singleChat = chats.find((c) => c._id === req.params.id);
-
-//   if (!singleChat) {
-//     return res.status(404).json({ message: "Chat not found" });
-//   }
-
-//   res.send(singleChat);
-// });
 
 app.listen(PORT, console.log(`Server Started on Port ${PORT}`));
