@@ -13,6 +13,16 @@ const MyChats = ({ fetchAgain }) => {
   const { user, selectedChat, setSelectedChat, chats, setChats } = ChatState();
   const { toast } = useToast();
 
+  useEffect(() => {
+    setLoggedUser(JSON.parse(localStorage.getItem("userInfo")));
+    const storedChats = JSON.parse(localStorage.getItem("chats"));
+    if (storedChats && storedChats.length > 0) {
+      setChats(storedChats);
+    } else {
+      fetchChats(); // Fetch from API only if localStorage is empty
+    }
+  }, [fetchAgain]);
+
   const fetchChats = async () => {
     try {
       const config = {
@@ -22,7 +32,11 @@ const MyChats = ({ fetchAgain }) => {
       };
 
       const { data } = await axios.get("api/chat", config);
-      setChats(Array.isArray(data) ? data : [data]);
+      // Ensure chats is always an array
+      const chatsArray = Array.isArray(data) ? data : [data];
+
+      setChats(chatsArray);
+      localStorage.setItem("chats", JSON.stringify(chatsArray)); // Save to localStorage
       // setChats(data);
     } catch (error) {
       toast({
@@ -34,11 +48,6 @@ const MyChats = ({ fetchAgain }) => {
       });
     }
   };
-
-  useEffect(() => {
-    setLoggedUser(JSON.parse(localStorage.getItem("userInfo")));
-    fetchChats();
-  }, [fetchAgain]);
 
   return (
     <div className={` ${selectedChat ? "hidden" : "flex"} md:flex`}>

@@ -29,7 +29,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ChatState } from "@/context/ChatProvider";
 import ProfileDialog from "../dailogs/ProfileDialog";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import axios from "axios";
 import LoaderSkeliton from "../ui/LoaderSkeliton";
@@ -45,8 +45,15 @@ const SideDrawer = ({ onclose }) => {
   const [loadingChat, setLoadingChat] = useState(false);
   const [open, setOpen] = useState(false);
 
+  useEffect(() => {
+    // Load chats from localStorage on mount
+    const storedChats = JSON.parse(localStorage.getItem("chats"));
+    if (storedChats) setChats(storedChats);
+  }, []);
+
   const logOutHandler = () => {
     localStorage.removeItem("userInfo");
+    localStorage.removeItem("chats"); // Clear stored chats on logout
     navigate("/");
   };
 
@@ -93,7 +100,15 @@ const SideDrawer = ({ onclose }) => {
 
       const { data } = await axios.post("api/chat", { userId }, config);
 
-      if (!chats.find((c) => c._id === data._id)) setChats([data, ...chats]);
+      let updatedChats = chats;
+      if (!chats.find((c) => c._id === data._id)) {
+        updatedChats = [data, ...chats];
+        setChats(updatedChats);
+        localStorage.setItem("chats", JSON.stringify(updatedChats)); // Store in localStorage
+      }
+
+      // if (!chats.find((c) => c._id === data._id)) setChats([data, ...chats]);
+
       setSelectedChat(data);
     } catch (error) {
       toast({
