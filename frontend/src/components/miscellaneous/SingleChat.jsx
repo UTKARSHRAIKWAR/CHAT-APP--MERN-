@@ -1,10 +1,11 @@
 import { ChatState } from "@/context/ChatProvider";
 import { Button } from "../ui/button";
-import { ArrowLeft, Loader } from "lucide-react";
+import { ArrowLeft, Loader, LucideLoaderCircle } from "lucide-react";
 import { getSender, getSenderFull } from "@/config/chatLogic";
 import ProfileDialogSelected from "../dailogs/SelectedProfileDialoge";
 import UpdateGroupChat from "./UpdateGroupChat";
 import { useState } from "react";
+import { ColorRing } from "react-loader-spinner";
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const { user, selectedChat, setSelectedChat } = ChatState();
@@ -43,9 +44,19 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
           </div>
 
           <div className="flex flex-col justify-end p-3 bg-[#E8E8E8] w-full h-full rounded-lg overflow-y-hidden">
-            {
-              loading ? <Loader />
-            }
+            {loading ? (
+              <ColorRing
+                visible={true}
+                height="90"
+                width="90"
+                ariaLabel="color-ring-loading"
+                wrapperStyle={{}}
+                wrapperClass="color-ring-wrapper self-center m-auto"
+                colors={["#e15b64", "#f47e60", "#f8b26a", "#abbd81", "#849b87"]}
+              />
+            ) : (
+              <div>{/* messages */}</div>
+            )}
           </div>
         </>
       ) : (
