@@ -144,7 +144,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
               <Button
                 variant="outline"
                 type="submit"
-                onClick={sendMessage} // Handle Button Click
+                onClick={sendMessage}
                 className="bg-[#CCCCCC] px-4 py-2 rounded-lg hover:bg-[#D6FDFF]"
               >
                 <SendHorizontal />
