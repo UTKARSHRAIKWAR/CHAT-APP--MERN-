@@ -1,4 +1,9 @@
-import { isSameSender, lastMessage } from "@/config/chatLogic";
+import {
+  isSameSender,
+  lastMessage,
+  isSameUser,
+  isSameSenderMargin,
+} from "@/config/chatLogic";
 import { ChatState } from "@/context/ChatProvider";
 import ScrollableFeed from "react-scrollable-feed";
 import {
@@ -15,8 +20,14 @@ const ScrollableChat = ({ messages }) => {
     <ScrollableFeed>
       {messages &&
         messages.map((m, i) => (
-          <div className="flex" key={m._id}>
-            {(isSameSender(messages, m, i, user._id) ||
+          <div
+            className={`flex items-end ${
+              m.sender._id === user._id ? "justify-end" : "justify-start"
+            }`}
+            key={m._id}
+          >
+            {((m.sender._id !== user._id &&
+              isSameSender(messages, m, i, user._id)) ||
               lastMessage(messages, i, user._id)) && (
               <TooltipProvider>
                 <Tooltip>
@@ -33,9 +44,15 @@ const ScrollableChat = ({ messages }) => {
               </TooltipProvider>
             )}
             <div
-              className={`max-w-[75%] px-4 py-2 rounded-[20px] text-black break-words ${
-                m.sender._id === user._id ? "bg-[#BEE3F8]" : "bg-[#B9F5D0]"
-              }`}
+              className={`max-w-[75%] px-4 py-2 rounded-[20px] text-black break-words
+    ${isSameSenderMargin(messages, m, i, user._id)}
+    ${isSameUser(messages, m, i) ? "mt-1" : "mt-3"}
+    ${
+      m.sender._id === user._id
+        ? "bg-[#BEE3F8] self-end"
+        : "bg-[#B9F5D0] self-start"
+    }
+    `}
             >
               {m.content}
             </div>
