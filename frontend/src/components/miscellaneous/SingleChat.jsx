@@ -1,6 +1,6 @@
 import { ChatState } from "@/context/ChatProvider";
 import { Button } from "../ui/button";
-import { ArrowLeft, SendHorizontal } from "lucide-react";
+import { ArrowLeft, SendHorizontal, EllipsisVertical } from "lucide-react";
 import { getSender, getSenderFull } from "@/config/chatLogic";
 import ProfileDialogSelected from "../dailogs/SelectedProfileDialoge";
 import UpdateGroupChat from "./UpdateGroupChat";
@@ -10,12 +10,25 @@ import { Input } from "../ui/input";
 import axios from "axios";
 import { useToast } from "@/hooks/use-toast";
 import ScrollableChat from "./ScrollableChat";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { io } from "socket.io-client";
+
+const ENDPOINT = "http://localhost:5000";
+var socket, selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const { user, selectedChat, setSelectedChat } = ChatState();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [socketConnected, setSocketConnected] = useState(false);
   const { toast } = useToast();
 
   const fetchMessages = async () => {
@@ -35,6 +48,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       setMessages(data);
 
       setLoading(false);
+
+      socket.emit("join chat", selectedChat._id);
     } catch (error) {
       toast({
         title: "Something Went Wrong!",
@@ -47,6 +62,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
   useEffect(() => {
     fetchMessages();
+    selectedChatCompare = selectedChat;
   }, [selectedChat]);
 
   const sendMessage = async (event) => {
@@ -81,6 +97,12 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     }
   };
 
+  useEffect(() => {
+    socket = io(ENDPOINT);
+    socket.emit("setup", user);
+    socket.on("connection", () => setSocketConnected(true));
+  }, []);
+
   const typingHandler = (e) => {
     setNewMessage(e.target.value);
   };
@@ -88,32 +110,47 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     <>
       {selectedChat ? (
         <>
-          <div className=" flex justify-between  items-center pb-3 px-2 w-full font-sans text-[28px] md:text-[30px]">
-            <Button
-              className="flex md:hidden"
-              variant="ghost"
-              size="icon"
-              onClick={() => setSelectedChat(null)}
-            >
-              <ArrowLeft className="w-5 h-5" />
-            </Button>
-            {!selectedChat.isGroupChat ? (
-              <>
-                {getSender(user, selectedChat.users)}{" "}
-                <ProfileDialogSelected
-                  user={getSenderFull(user, selectedChat.users)}
-                />{" "}
-              </>
-            ) : (
-              <>
-                {selectedChat.chatName.toUpperCase()}
-                <UpdateGroupChat
-                  fetchAgain={fetchAgain}
-                  setFetchAgain={setFetchAgain}
-                  fetchMessages={fetchMessages}
-                />
-              </>
-            )}
+          <div className=" flex justify-between  items-center gap-2 pb-3 px-2 w-full font-sans text-[28px] md:text-[30px]">
+            <div className="flex justify-start gap-2">
+              {" "}
+              <Button
+                className="flex md:hidden"
+                variant="ghost"
+                size="icon"
+                onClick={() => setSelectedChat(null)}
+              >
+                <ArrowLeft className="w-5 h-5" />
+              </Button>
+              {!selectedChat.isGroupChat ? (
+                <>
+                  <ProfileDialogSelected
+                    user={getSenderFull(user, selectedChat.users)}
+                  />
+                  {getSender(user, selectedChat.users)}
+                </>
+              ) : (
+                <>
+                  {selectedChat.chatName.toUpperCase()}
+                  <UpdateGroupChat
+                    fetchAgain={fetchAgain}
+                    setFetchAgain={setFetchAgain}
+                    fetchMessages={fetchMessages}
+                  />
+                </>
+              )}
+            </div>
+            <div>
+              <DropdownMenu>
+                <DropdownMenuTrigger>
+                  <EllipsisVertical />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  {/* <DropdownMenuLabel>Clear Chat</DropdownMenuLabel> */}
+                  {/* <DropdownMenuSeparator /> */}
+                  <DropdownMenuItem>Clear Chat</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
           </div>
 
           <div className="flex flex-col justify-end p-3 bg-[#E8E8E8] w-full h-full rounded-lg overflow-y-hidden">

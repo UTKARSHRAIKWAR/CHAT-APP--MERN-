@@ -57,7 +57,7 @@ const ProfileDialogSelected = ({ user }) => {
         {/* ✅ Using asChild to avoid nested <button> issue */}
         <DialogTrigger asChild>
           <div className="cursor-pointer">
-            <Avatar className="w-[50px] h-[50px]">
+            <Avatar className="w-[43px] h-[43px]">
               <AvatarImage src={user.pic} />
             </Avatar>
           </div>

@@ -192,7 +192,7 @@ const SideDrawer = ({ onclose }) => {
       </div>
 
       <div className="">
-        <Menubar>
+        <Menubar asChild>
           <MenubarMenu>
             <MenubarTrigger>
               <Avatar className="cursor-pointer">
@@ -201,7 +201,7 @@ const SideDrawer = ({ onclose }) => {
               </Avatar>
             </MenubarTrigger>
             <MenubarContent>
-              <ProfileDialog>
+              <ProfileDialog > 
                 <MenubarItem>
                   My Profile
                   <MenubarShortcut>⌘T</MenubarShortcut>
