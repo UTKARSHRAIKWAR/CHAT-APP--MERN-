@@ -11,6 +11,18 @@
   color: black;
 }
 
+.lottie-container {
+  width: 24px !important;
+  /* Set exact width */
+  height: 24px !important;
+  /* Set exact height */
+  overflow: hidden;
+  /* Crop excess space */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 /* Hide scrollbar for Webkit (Chrome, Safari, Edge) */
 ::-webkit-scrollbar {
   display: none;

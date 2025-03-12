@@ -14,11 +14,10 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { io } from "socket.io-client";
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 const ENDPOINT = "http://localhost:5000";
 var socket, selectedChatCompare;
@@ -30,6 +29,17 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [loading, setLoading] = useState(false);
   const [socketConnected, setSocketConnected] = useState(false);
   const { toast } = useToast();
+  const [typing, setTyping] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
+
+  // const defaultOptions = () => ({
+  //   loop: true,
+  //   autoplay: true,
+  //   animationData: animationData,
+  //   rendererSettings: {
+  //     preserveAspectRatio: "xMidYMid slice",
+  //   },
+  // });
 
   const fetchMessages = async () => {
     if (!selectedChat) return;
@@ -61,14 +71,37 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   };
 
   useEffect(() => {
+    socket = io(ENDPOINT);
+    socket.emit("setup", user);
+    socket.on("connected", () => setSocketConnected(true));
+    socket.on("typing", () => setIsTyping(true));
+    socket.on("stop typing", () => setIsTyping(false));
+  }, []);
+
+  useEffect(() => {
     fetchMessages();
     selectedChatCompare = selectedChat;
   }, [selectedChat]);
 
+  useEffect(() => {
+    socket.on("message received", (newMessageReceived) => {
+      if (
+        !selectedChatCompare ||
+        selectedChatCompare._id !== newMessageReceived.chat._id
+      ) {
+        //give notification
+      } else {
+        setMessages([...messages, newMessageReceived]);
+      }
+    });
+  });
+
   const sendMessage = async (event) => {
     event.preventDefault();
+
     if (!newMessage.trim()) return;
 
+    socket.emit("stop typing", selectedChat._id);
     try {
       const config = {
         headers: {
@@ -86,6 +119,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       );
 
       setMessages([...messages, data]);
+      socket.emit("new message", data);
+
       setNewMessage("");
     } catch (error) {
       toast({
@@ -97,14 +132,27 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     }
   };
 
-  useEffect(() => {
-    socket = io(ENDPOINT);
-    socket.emit("setup", user);
-    socket.on("connection", () => setSocketConnected(true));
-  }, []);
-
   const typingHandler = (e) => {
     setNewMessage(e.target.value);
+
+    if (!socketConnected) return;
+
+    if (!typing) {
+      setTyping(true);
+      socket.emit("typing", selectedChat._id);
+    }
+
+    let lastTypingTime = new Date().getTime();
+    var timerLength = 3000;
+    setTimeout(() => {
+      var timeNow = new Date().getTime();
+      var timeDiff = timeNow - lastTypingTime;
+
+      if (timeDiff > timerLength && typing) {
+        socket.emit("stop typing", selectedChat._id);
+        setTyping(false);
+      }
+    }, timerLength);
   };
   return (
     <>
@@ -167,6 +215,18 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             ) : (
               <div className="flex flex-col overflow-y-scroll no-scrollbar">
                 <ScrollableChat messages={messages} />
+                {isTyping ? (
+                  <>
+                    <DotLottieReact
+                      src="https://lottie.host/bcfbc45f-66b0-4780-aa4d-111528d62526/Epr9HIUzoj.lottie"
+                      loop
+                      autoplay
+                      className="w-[80px] mt-2 mb-2 ml-2"
+                    />
+                  </>
+                ) : (
+                  <></>
+                )}
               </div>
             )}
             <form onSubmit={sendMessage} className="flex gap-2 mt-3">
