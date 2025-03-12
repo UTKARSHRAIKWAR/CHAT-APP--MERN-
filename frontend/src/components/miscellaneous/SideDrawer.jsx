@@ -1,6 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Loader, Search } from "lucide-react";
+import NotificationBadge from "react-notification-badge";
+import { Effect } from "react-notification-badge";
+import { Bell, Loader, Search } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -34,9 +36,23 @@ import { useToast } from "@/hooks/use-toast";
 import axios from "axios";
 import LoaderSkeliton from "../ui/LoaderSkeliton";
 import UserListing from "./UserListing";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
+import { getSender } from "@/config/chatLogic";
 
 const SideDrawer = ({ onclose }) => {
-  const { user, setSelectedChat, chats, setChats } = ChatState();
+  const {
+    user,
+    setSelectedChat,
+    chats,
+    setChats,
+    notification,
+    setNotification,
+  } = ChatState();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [search, setSearch] = useState("");
@@ -191,7 +207,38 @@ const SideDrawer = ({ onclose }) => {
         </TooltipProvider>
       </div>
 
-      <div className="">
+      <div className="flex">
+        <div className="p-1 m-1 w-fit mt-[10px]">
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <NotificationBadge
+                className="size-5"
+                count={notification.length}
+                effect={Effect.SCALE}
+              />
+              <Bell className="size-[30px]" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem className="flex flex-col">
+                {!notification.length && "No New Messages"}
+                {notification.map((notif) => (
+                  <DropdownMenuItem
+                    key={notif._id}
+                    onClick={() => {
+                      setSelectedChat(notif.chat);
+                      setNotification(notification.filter((n) => n !== notif));
+                    }}
+                  >
+                    {" "}
+                    {notif.chat.isGroupChat
+                      ? `New Message in ${notif.chat.chatName}`
+                      : `New Message from ${getSender(user, notif.chat.users)}`}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
         <Menubar asChild>
           <MenubarMenu>
             <MenubarTrigger>
@@ -201,7 +248,7 @@ const SideDrawer = ({ onclose }) => {
               </Avatar>
             </MenubarTrigger>
             <MenubarContent>
-              <ProfileDialog > 
+              <ProfileDialog>
                 <MenubarItem>
                   My Profile
                   <MenubarShortcut>⌘T</MenubarShortcut>
