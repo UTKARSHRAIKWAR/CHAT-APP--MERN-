@@ -152,19 +152,19 @@ const SideDrawer = ({ onclose }) => {
                     <span>Search user</span>
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="left">
-                  <SheetHeader>
+                <SheetContent side="left" className="gap-2">
+                  <SheetHeader className="gap-2">
                     <SheetTitle>Find Users</SheetTitle>
                     <SheetDescription>
                       Search and chat with users instantly.
                     </SheetDescription>
                   </SheetHeader>
-                  <div className="flex justify-between pb-2  ">
+                  <div className="flex justify-between pb-2  mt-2 ">
                     <Input
                       value={search}
                       type="text"
                       placeholder="Search users to Chat"
-                      className="w-[280px]"
+                      className="w-[280px] rounded-lg"
                       onChange={(e) => {
                         setSearch(e.target.value);
                       }}

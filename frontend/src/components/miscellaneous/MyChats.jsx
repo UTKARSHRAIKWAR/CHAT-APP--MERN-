@@ -41,7 +41,7 @@ const MyChats = ({ fetchAgain }) => {
     } catch (error) {
       toast({
         title: "Something Went Wrong!",
-        description: "Failed to Load the Chats",
+        description: "Failed to Load the Chats : ",
         status: "error",
         variant: "destructive",
         duration: 3000,

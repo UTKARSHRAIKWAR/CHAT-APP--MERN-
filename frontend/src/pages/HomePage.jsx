@@ -17,7 +17,7 @@ const HomePage = () => {
   }, [navigate]);
 
   return (
-    <div className="">
+    <div className="flex items-center ml-[150px] ">
       <Card>
         <CardHeader>
           <CardTitle>Chat App</CardTitle>

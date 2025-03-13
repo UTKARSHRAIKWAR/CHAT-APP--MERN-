@@ -12,7 +12,6 @@ import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { ChatState } from "@/context/ChatProvider";
 import axios from "axios";
-import LoaderSkeliton from "../ui/LoaderSkeliton";
 import UserListing from "./UserListing";
 import UserBadge from "./UserBadge";
 
@@ -97,9 +96,7 @@ const GroupModal = ({ children }) => {
 
       toast({
         title: "New Group Chat Created!",
-        description: "Failed to Load the Search Results",
         status: "Success",
-        variant: "blue",
         duration: 3000,
       });
     } catch (error) {
